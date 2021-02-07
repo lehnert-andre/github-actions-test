@@ -19,11 +19,14 @@ jobs:
       - run: |
           echo "::group::Information"
           
-          echo "Creating version: ${{ github.event.inputs.version }}!"
           echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME (${{ github.event_name }})"
           echo "GITHUB_EVENT_PATH: $GITHUB_EVENT_PATH (${{ github.event_path }})"
           echo "REF: ${{ github.ref }}
           
+          cat $GITHUB_EVENT_PATH
+          
+          echo "Creating version: ${{ github.event.inputs.version != null ? github.event.inputs.version : '' }}!"
+
           echo "::endgroup::"
         
       - name: Checkout
