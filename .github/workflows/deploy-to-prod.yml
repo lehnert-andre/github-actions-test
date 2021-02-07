@@ -25,7 +25,7 @@ jobs:
           
           cat $GITHUB_EVENT_PATH
           
-          echo "Creating version: ${{ github.event.inputs.version != null ? github.event.inputs.version : '' }}!"
+          echo "Creating version: ${{ github.event.inputs.version }}!"
 
           echo "::endgroup::"
         
