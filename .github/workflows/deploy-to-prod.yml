@@ -41,6 +41,10 @@ jobs:
           
           if [ "$IS_PRE_RELEASE" == "false" ]; then exit 0; else exit 1; fi
           
+      - name: Show files
+        continue-on-error: true
+        run: ls -la
+        
       - name: Share ENVs
         continue-on-error: true
         uses: actions/upload-artifact@v1
