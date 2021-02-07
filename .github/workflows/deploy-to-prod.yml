@@ -17,9 +17,38 @@ on:
 jobs:   
   info:
     runs-on: ubuntu-latest
+    outputs:
+      validRelease: ${{ steps.version.conclusion }}
     steps:
-      - run: |
-          cat $GITHUB_EVENT_PATH
+      - name: Get Version Information
+        id: version
+        continue-on-error: false
+        run: |
+          # Get original release_tag based on the release event payload
+          export RELEASE_TAG=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')
+          echo "Set RELEASE_TAG=$RELEASE_TAG"
+          echo $RELEASE_TAG > RELEASE_TAG
+
+          # Split release_tag by ".", e.g. v2.8.1 -> v2
+          export MAJOR_VERSION=$(echo $RELEASE_TAG | sed s/\\./\\n/g | head -1)
+          echo "Set MAJOR_VERSION=$MAJOR_VERSION"
+          echo $MAJOR_VERSION > MAJOR_VERSION
+
+          export IS_PRE_RELEASE=$(cat $GITHUB_EVENT_PATH | jq '.release.prerelease' | sed -e 's/^"//' -e 's/"$//')
+          echo "Set IS_PRE_RELEASE=$IS_PRE_RELEASE"
+          echo "is_prerelease=$IS_PRE_RELEASE" > IS_PRE_RELEASE
+          
+          if [ "$IS_PRE_RELEASE" == "false" ]; then exit 0; else exit 1; fi
+          
+      - name: Share ENVs
+        uses: actions/upload-artifact@v1
+        with:
+          name: envs
+          path: |
+            RELEASE_TAG
+            MAJOR_VERSION
+            IS_PRE_RELEASE
+          
   build:
     name: Build
     needs: [info]
@@ -70,22 +99,15 @@ jobs:
     name: Deploy to PROD
     needs: [build]
     runs-on: ubuntu-latest
-    steps:
-      - name: Get Version
-        run: |         
-          # Get original release_tag based on the release event payload
-          export RELEASE_TAG=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')
-          echo "Set env.release_tag=$RELEASE_TAG"
-          echo "release_tag=$RELEASE_TAG" >> $GITHUB_ENV
-          # Split release_tag by ".", e.g. v2.8.1 -> v2
-          export MAJOR_VERSION=$(echo $RELEASE_TAG | sed s/\\./\\n/g | head -1)
-          echo "Set env.major_version=$MAJOR_VERSION"
-          echo "major_version=$MAJOR_VERSION" >> $GITHUB_ENV
-
-      - name: Verify Version
+    steps:     
+      - name: Get ENVs
+        uses: actions/download-artifact@v2
+        with:
+          name: envs
+          
+      - name: Set ENVs
         run: |
-          echo "release_tag: ${{ env.release_tag }}"
-          echo "major_version: ${{ env.major_version }}"
+          echo "major_version=$(cat MAJOR_VERSION)" >> $GITHUB_ENV
                   
       - name: Download Artifact
         uses: actions/download-artifact@v2
