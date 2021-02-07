@@ -16,6 +16,7 @@ on:
 
 jobs:   
   info:
+    name: Check version
     runs-on: ubuntu-latest
     outputs:
       validRelease: ${{ steps.version.conclusion }}
@@ -109,6 +110,7 @@ jobs:
           
       - name: Set ENVs
         run: |
+          echo "MAJOR_VERSION: $(cat MAJOR_VERSION)"
           echo "major_version=$(cat MAJOR_VERSION)" >> $GITHUB_ENV
                   
       - name: Download Artifact
