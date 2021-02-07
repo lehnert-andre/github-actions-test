@@ -30,7 +30,7 @@ jobs:
         
       - name: Get Version
         run: |         
-          echo "::set-env name=VERSION::$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')"
+          # unsecure and diabled # echo "::set-env name=VERSION::$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')"
           echo "version_2=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')" >> $GITHUB_ENV
 
       - name: Use the envs
