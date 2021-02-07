@@ -1,29 +1,20 @@
-# This is a basic workflow to help you get started with Actions
+name: Deploy to DEV /dev/**
 
-name: Build and Deploy DEV to GitHub Pages /dev/**
-
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main, feature, prod ]
+    branches: [ main, feature ]
   release:
     types: 
       - created
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
     name: Build
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - run: |
           echo "::group::Information"
 
-          echo "Steps: ${{ toJSON(steps) }}"
           echo "Build type is DEV ? ${{ github.ref == 'refs/heads/main' || contains(github.ref, 'feature/') }}"
           
           echo "::endgroup::"
@@ -68,14 +59,11 @@ jobs:
         with:
           name: dist-folder
           path: out
-          retention-days: 5
   
   deploy:
     name: Deploy to DEV
     needs: [build]
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@v2
@@ -88,18 +76,6 @@ jobs:
       - name: Deploy on DEV
         uses: JamesIves/github-pages-deploy-action@3.7.1
         if: success() && ( github.ref == 'refs/heads/main' || contains(github.ref, 'feature/') )
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: . # The folder the action should deploy.
-          TARGET_FOLDER: dev 
-          CLEAN: true # Automatically remove deleted files from the deploy branch
-          COMMIT_MESSAGE: 'Deploy commit $GITHUB_SHA'
-          SILENT: true
-         
-      - name: Deploy on PROD
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        if: success() && ( github.ref == 'refs/heads/prod' )
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
