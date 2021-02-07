@@ -86,6 +86,8 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - run: echo "${{ env.major_version }}"
+        
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
