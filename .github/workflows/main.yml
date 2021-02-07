@@ -97,6 +97,3 @@ jobs:
           CLEAN: true # Automatically remove deleted files from the deploy branch
           COMMIT_MESSAGE: 'Deploy commit $GITHUB_SHA'
           SILENT: true
-      
-      - name: The job has failed
-        if: ${{ failure() }}
