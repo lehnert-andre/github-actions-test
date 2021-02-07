@@ -1,21 +1,16 @@
-name: Deploy to DEV /dev/**
+name: Deploy to DEV
 
 on:
   push:
-    branches: [ main, feature ]
+    branches: 
+      - main
+      - feature*
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "::group::Information"
-
-          echo "Build type is DEV ? ${{ github.ref == 'refs/heads/main' || contains(github.ref, 'feature/') }}"
-          
-          echo "::endgroup::"
-        
       - name: Checkout
         uses: actions/checkout@v2.3.1
         with:
@@ -72,7 +67,7 @@ jobs:
         
       - name: Deploy on DEV
         uses: JamesIves/github-pages-deploy-action@3.7.1
-        if: success() && ( github.ref == 'refs/heads/main' || contains(github.ref, 'feature/') )
+        if: success()
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
