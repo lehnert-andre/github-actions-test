@@ -41,12 +41,6 @@ jobs:
  
       - name: Show files
         run: ls -la
-  
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show files
-        run: ls -la
         
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@3.7.1
