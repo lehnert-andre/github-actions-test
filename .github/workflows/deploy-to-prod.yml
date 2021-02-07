@@ -14,9 +14,15 @@ on:
     types: 
       - created
 
-jobs:          
+jobs:   
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          cat $GITHUB_EVENT_PATH
   build:
     name: Build
+    needs: [info]
     runs-on: ubuntu-latest
     steps:     
       - name: Checkout
