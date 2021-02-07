@@ -33,7 +33,7 @@ jobs:
   build:
     name: Build
     needs: [info]
-    if: needs.check.outputs.validRelease == 'success'
+    if: needs.info.outputs.validRelease == 'success'
     runs-on: ubuntu-latest
     steps:     
       - name: Checkout
