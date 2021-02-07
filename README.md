@@ -7,4 +7,6 @@
 - PROD
   - [PROD V1 Website](https://lehnert-andre.github.io/github-actions-test/v1/)
   - [PROD V2 Website](https://lehnert-andre.github.io/github-actions-test/v2/)
-- [DEV Website](https://lehnert-andre.github.io/github-actions-test/dev/)
+  - [PROD V3 Website](https://lehnert-andre.github.io/github-actions-test/v3/)
+- DEV
+  - [DEV Website](https://lehnert-andre.github.io/github-actions-test/dev/)
