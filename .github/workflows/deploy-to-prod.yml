@@ -24,17 +24,15 @@ jobs:
           echo "GITHUB_EVENT_PATH: $GITHUB_EVENT_PATH (${{ github.event_path }})"
           echo "REF: ${{ github.ref }}"
           
-          apt-get install -y jq
-          cat $GITHUB_EVENT_PATH | jq 
-          
           echo "Creating version: ${{ github.event.inputs.version }}!"
 
           echo "::endgroup::"
         
       - name: Get Version
-        run: |          
-          apt-get install -y jq
-          cat $GITHUB_EVENT_PATH | jq 
+        run: |   
+          cat $GITHUB_EVENT_PATH
+          echo "--------------------------------------"       
+          cat $GITHUB_EVENT_PATH | jq '.'
 
   build:
     name: Build
