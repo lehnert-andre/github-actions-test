@@ -41,6 +41,7 @@ jobs:
           if [ "$IS_PRE_RELEASE" == "false" ]; then exit 0; else exit 1; fi
           
       - name: Share ENVs
+        continue-on-error: true
         uses: actions/upload-artifact@v1
         with:
           name: envs
