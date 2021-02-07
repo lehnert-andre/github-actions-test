@@ -30,8 +30,14 @@ jobs:
         
       - name: Get Version
         run: |         
-          # unsecure and diabled # echo "::set-env name=VERSION::$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')"
-          echo "version_2=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')" >> $GITHUB_ENV
+          # Get original release_tag based on the release event payload
+          set RELEASE_TAG=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')
+          echo $RELEASE_TAG
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_ENV
+          # Split release_tag by ".", e.g. v2.8.1 -> v2
+          set MAJOR_VERSION=$(echo $RELEASE_TAG | sed s/\\./\\n/g | head -1)
+          echo $MAJOR_VERSION
+          echo "major_version=$MAJOR_VERSION" >> $GITHUB_ENV
 
       - name: Use the envs
         run: |
