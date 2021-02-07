@@ -1,4 +1,4 @@
-name: Test DEV
+name: Tests
 
 on:
   push:
