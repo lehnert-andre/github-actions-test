@@ -14,30 +14,9 @@ on:
     types: 
       - created
 
-jobs:
-  info:
-    name: Information
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get Version
-        run: |         
-          # Get original release_tag based on the release event payload
-          export RELEASE_TAG=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')
-          echo "Set env.release_tag=$RELEASE_TAG"
-          echo "release_tag=$RELEASE_TAG" >> $GITHUB_ENV
-          # Split release_tag by ".", e.g. v2.8.1 -> v2
-          export MAJOR_VERSION=$(echo $RELEASE_TAG | sed s/\\./\\n/g | head -1)
-          echo "Set env.major_version=$MAJOR_VERSION"
-          echo "major_version=$MAJOR_VERSION" >> $GITHUB_ENV
-
-      - name: Verify Version
-        run: |
-          echo "release_tag: ${{ env.release_tag }}"
-          echo "major_version: ${{ env.major_version }}"
-          
+jobs:          
   build:
     name: Build
-    needs: [info]
     runs-on: ubuntu-latest
     steps:     
       - name: Checkout
@@ -86,8 +65,22 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ env.major_version }}"
-        
+      - name: Get Version
+        run: |         
+          # Get original release_tag based on the release event payload
+          export RELEASE_TAG=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')
+          echo "Set env.release_tag=$RELEASE_TAG"
+          echo "release_tag=$RELEASE_TAG" >> $GITHUB_ENV
+          # Split release_tag by ".", e.g. v2.8.1 -> v2
+          export MAJOR_VERSION=$(echo $RELEASE_TAG | sed s/\\./\\n/g | head -1)
+          echo "Set env.major_version=$MAJOR_VERSION"
+          echo "major_version=$MAJOR_VERSION" >> $GITHUB_ENV
+
+      - name: Verify Version
+        run: |
+          echo "release_tag: ${{ env.release_tag }}"
+          echo "major_version: ${{ env.major_version }}"
+                  
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
