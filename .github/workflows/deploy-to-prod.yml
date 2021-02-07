@@ -29,10 +29,8 @@ jobs:
           echo "::endgroup::"
         
       - name: Get Version
-        run: |   
-          cat $GITHUB_EVENT_PATH
-          echo "--------------------------------------"       
-          cat $GITHUB_EVENT_PATH | jq '.'
+        run: |         
+          cat $GITHUB_EVENT_PATH | jq '.release.tag_name'
 
   build:
     name: Build
