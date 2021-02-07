@@ -43,6 +43,18 @@ jobs:
         with:
           node-version: '15.x'
 
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+            
       - name: Yarn Install
         uses: CultureHQ/actions-yarn@v1.0.1
         with:
@@ -73,6 +85,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: dist-folder
+             
+      - name: Show files
+        run: ls -la
         
       - name: Deploy on DEV
         uses: JamesIves/github-pages-deploy-action@3.7.1
