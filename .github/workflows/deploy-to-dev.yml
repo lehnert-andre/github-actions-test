@@ -10,11 +10,6 @@ on:
   release:
     types: 
       - created
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version'
-        required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -28,7 +23,6 @@ jobs:
       - run: |
           echo "::group::Information"
 
-          echo "Creating version: ${{ github.event.inputs.version }}!"
           echo "Steps: ${{ toJSON(steps) }}"
           echo "Build type is DEV ? ${{ github.ref == 'refs/heads/main' || contains(github.ref, 'feature/') }}"
           
