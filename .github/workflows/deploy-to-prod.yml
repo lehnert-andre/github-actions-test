@@ -25,35 +25,10 @@ jobs:
         id: version
         continue-on-error: true
         run: |
-          # Get original release_tag based on the release event payload
-          export RELEASE_TAG=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')
-          echo "Set RELEASE_TAG=$RELEASE_TAG"
-          echo $RELEASE_TAG > RELEASE_TAG
-
-          # Split release_tag by ".", e.g. v2.8.1 -> v2
-          export MAJOR_VERSION=$(echo $RELEASE_TAG | sed s/\\./\\n/g | head -1)
-          echo "Set MAJOR_VERSION=$MAJOR_VERSION"
-          echo $MAJOR_VERSION > MAJOR_VERSION
-
           export IS_PRE_RELEASE=$(cat $GITHUB_EVENT_PATH | jq '.release.prerelease' | sed -e 's/^"//' -e 's/"$//')
           echo "Set IS_PRE_RELEASE=$IS_PRE_RELEASE"
-          echo "is_prerelease=$IS_PRE_RELEASE" > IS_PRE_RELEASE
           
           if [ "$IS_PRE_RELEASE" == "false" ]; then exit 0; else exit 1; fi
-          
-      - name: Show files
-        continue-on-error: true
-        run: ls -la
-        
-      - name: Share ENVs
-        continue-on-error: true
-        uses: actions/upload-artifact@v1
-        with:
-          name: envs
-          path: |
-            RELEASE_TAG
-            MAJOR_VERSION
-            IS_PRE_RELEASE
           
   build:
     name: Build
@@ -107,16 +82,17 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:     
-      - name: Get ENVs
-        uses: actions/download-artifact@v2
-        with:
-          name: envs
-          
-      - name: Set ENVs
+      - name: Get Major Version
         run: |
-          echo "MAJOR_VERSION: $(cat MAJOR_VERSION)"
+          # Get original release_tag based on the release event payload
+          export RELEASE_TAG=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')
+          echo "Set RELEASE_TAG=$RELEASE_TAG"
+
+          # Split release_tag by ".", e.g. v2.8.1 -> v2
+          export MAJOR_VERSION=$(echo $RELEASE_TAG | sed s/\\./\\n/g | head -1)
+          echo "Set major_version=$MAJOR_VERSION"
           echo "major_version=$(cat MAJOR_VERSION)" >> $GITHUB_ENV
-                  
+
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
