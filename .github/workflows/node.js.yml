@@ -25,4 +25,4 @@ jobs:
     - name: npm install
       run: npm ci
     - name: npm build
-      run: pm run build --if-present
+      run: npm run build --if-present
