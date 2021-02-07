@@ -12,23 +12,35 @@ on:
       - created
 
 jobs:
-  build:
-    name: Build
+  info:
+    name: Information
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: Information
+        run: |
           echo "::group::Information"
           
           echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME (${{ github.event_name }})"
           echo "GITHUB_EVENT_PATH: $GITHUB_EVENT_PATH (${{ github.event_path }})"
           echo "REF: ${{ github.ref }}"
           
-          cat $GITHUB_EVENT_PATH
+          apt-get install -y jq
+          cat $GITHUB_EVENT_PATH | jq 
           
           echo "Creating version: ${{ github.event.inputs.version }}!"
 
           echo "::endgroup::"
         
+      - name: Get Version
+        run: |          
+          apt-get install -y jq
+          cat $GITHUB_EVENT_PATH | jq 
+
+  build:
+    name: Build
+    needs: [info]
+    runs-on: ubuntu-latest
+    steps:     
       - name: Checkout
         uses: actions/checkout@v2.3.1
         with:
