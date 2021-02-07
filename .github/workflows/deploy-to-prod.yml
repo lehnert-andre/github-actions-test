@@ -1,4 +1,4 @@
-name: Deploy Artifact to GitHub Pages /<version>/**
+name: Deploy to PROD
 
 on:
   workflow_dispatch:
@@ -17,7 +17,6 @@ jobs:
           echo "::group::Information"
 
           echo "Creating version: ${{ github.event.inputs.version }}!"
-          echo "Steps: ${{ toJSON(steps) }}"
           echo "Build type is DEV ? ${{ github.ref == 'refs/heads/main' || contains(github.ref, 'feature/') }}"
           
           echo "::endgroup::"
@@ -32,7 +31,7 @@ jobs:
          
       - name: Deploy on PROD
         uses: JamesIves/github-pages-deploy-action@3.7.1
-        if: success() && ( github.ref == 'refs/heads/prod' )
+        if: success() # && ( github.ref == 'refs/heads/prod' )
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
