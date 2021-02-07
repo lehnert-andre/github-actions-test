@@ -30,8 +30,14 @@ jobs:
         
       - name: Get Version
         run: |         
-          cat $GITHUB_EVENT_PATH | jq '.release.tag_name'
+          echo "::set-env name=VERSION::$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')"
+          echo "version_2=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')" >> $GITHUB_ENV
 
+      - name: Use the envs
+        run: |
+          echo "VERSION: $VERSION"
+          echo "version_2: ${{ env.version_2 }}"
+          
   build:
     name: Build
     needs: [info]
