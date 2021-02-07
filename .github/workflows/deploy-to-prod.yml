@@ -91,7 +91,8 @@ jobs:
           # Split release_tag by ".", e.g. v2.8.1 -> v2
           export MAJOR_VERSION=$(echo $RELEASE_TAG | sed s/\\./\\n/g | head -1)
           echo "Set major_version=$MAJOR_VERSION"
-          echo "major_version=$(cat MAJOR_VERSION)" >> $GITHUB_ENV
+          echo "major_version=$(cat $MAJOR_VERSION)" >> $GITHUB_ENV
+          echo "major_version: ${{ env.major_version }}"
 
       - name: Download Artifact
         uses: actions/download-artifact@v2
