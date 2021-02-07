@@ -1,0 +1,45 @@
+name: Test DEV
+
+on:
+  push:
+    branches: 
+      - main
+      - feature*
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.1
+        with:
+          persist-credentials: false
+        
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: '15.x'
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+            
+      - name: Yarn Install
+        uses: CultureHQ/actions-yarn@v1.0.1
+        with:
+          args: install
+      
+      #- name: Yarn Build
+      #  uses: CultureHQ/actions-yarn@v1.0.1
+      #  with:
+      #    args: test
+ 
