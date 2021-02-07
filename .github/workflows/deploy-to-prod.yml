@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Get Version Information
         id: version
-        continue-on-error: false
+        continue-on-error: true
         run: |
           # Get original release_tag based on the release event payload
           export RELEASE_TAG=$(cat $GITHUB_EVENT_PATH | jq '.release.tag_name' | sed -e 's/^"//' -e 's/"$//')
@@ -52,6 +52,7 @@ jobs:
   build:
     name: Build
     needs: [info]
+    if: needs.check.outputs.validRelease == 'success'
     runs-on: ubuntu-latest
     steps:     
       - name: Checkout
